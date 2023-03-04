@@ -55,7 +55,15 @@ public class HeterogeneousMaxHolder {
      * @return a smaller value among the provided value and the current maximum
      */
     // todo: implement a method according to javadoc
-
+    public <T> T put(Class<T> key, T value,
+                                                   Comparator<? super T> comparator) {
+        T currentMaxValue = (T) storageMaxValuePerType.get(key);
+        if (currentMaxValue == null || comparator.compare(currentMaxValue, value) < 0) {
+            storageMaxValuePerType.put(key, value);
+            return currentMaxValue;
+        }
+        return value;
+    }
     /**
      * A method getMax returns a max value by the given type. If no value is stored by this type,
      * then it returns null.
@@ -65,4 +73,7 @@ public class HeterogeneousMaxHolder {
      * @return current max value or null
      */
     // todo: implement a method according to javadoc
+    public <T> T getMax(Class<T> key) {
+        return (T) storageMaxValuePerType.get(key);
+    }
 }
