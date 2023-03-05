@@ -1,6 +1,7 @@
 package com.bobocode.cs;
 
 import com.bobocode.util.ExerciseNotCompletedException;
+import java.util.NoSuchElementException;
 
 /**
  * {@link LinkedQueue} implements FIFO {@link Queue}, using singly linked nodes. Nodes are stores in instances of nested
@@ -15,6 +16,9 @@ import com.bobocode.util.ExerciseNotCompletedException;
  * @author Ivan Virchenko
  */
 public class LinkedQueue<T> implements Queue<T> {
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
 
     /**
      * Adds an element to the end of the queue.
@@ -22,7 +26,18 @@ public class LinkedQueue<T> implements Queue<T> {
      * @param element the element to add
      */
     public void add(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (element == null) {
+            throw new NullPointerException();
+        }
+        if (size == 0) {
+            head = tail = new Node<>(element);
+        } else {
+            Node<T> node = new Node<>(element);
+            tail.next = node;
+            tail = node;
+        }
+        size++;
+//        throw new ExerciseNotCompletedException(); // todo: implement this method
     }
 
     /**
@@ -31,7 +46,17 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an element that was retrieved from the head or null if queue is empty
      */
     public T poll() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == 0) {
+            return null;
+        }
+        T element = head.element;
+        head = head.next;
+        size--;
+        if (size == 0) {
+            tail = null;
+        }
+        return element;
+//        throw new ExerciseNotCompletedException(); // todo: implement this method
     }
 
     /**
@@ -40,7 +65,8 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an integer value that is a size of queue
      */
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size;
+//        throw new ExerciseNotCompletedException(); // todo: implement this method
     }
 
     /**
@@ -49,6 +75,16 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return {@code true} if the queue is empty, returns {@code false} if it's not
      */
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size == 0;
+//        throw new ExerciseNotCompletedException(); // todo: implement this method
+    }
+
+    private static class Node<T> {
+        T element;
+        Node<T> next;
+
+        public Node(T element) {
+            this.element = element;
+        }
     }
 }
