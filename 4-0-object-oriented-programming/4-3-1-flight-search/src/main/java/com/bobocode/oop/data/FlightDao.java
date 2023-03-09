@@ -22,7 +22,8 @@ public class FlightDao {
      * @return {@code true} if a flight number was stored, {@code false} otherwise
      */
     public boolean register(String flightNumber) {
-        throw new ExerciseNotCompletedException();// todo: implement this method
+        return flights.add(flightNumber);
+//        throw new ExerciseNotCompletedException();// todo: implement this method
     }
 
     /**
@@ -31,7 +32,8 @@ public class FlightDao {
      * @return a set of flight numbers
      */
     public Set<String> findAll() {
-        throw new ExerciseNotCompletedException();// todo: implement this method
+        return flights;
+//        throw new ExerciseNotCompletedException();// todo: implement this method
     }
 
 }
