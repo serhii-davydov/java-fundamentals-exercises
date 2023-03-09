@@ -15,7 +15,11 @@ import java.util.stream.Collectors;
  * {@link FlightService#searchFlights(String)}
  */
 public class FlightService {
-    private static FlightDao flightDao = new FlightDao();
+    private FlightDao flightDao;
+
+    public FlightService(FlightDao flightDao) {
+        this.flightDao = flightDao;
+    }
 
     /**
      * Adds a new flight number
