@@ -9,6 +9,8 @@ import com.bobocode.model.Account;
 import com.bobocode.model.CreditAccount;
 import com.bobocode.util.ExerciseNotCompletedException;
 
+import java.util.Comparator;
+import java.util.NoSuchElementException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -17,13 +19,15 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 
 /**
- * {@link CrazyOptionals} is an exercise class. Each method represents some operation with a {@link Account} and
+ * {@link CrazyOptionals} is an exercise class. Each method represents some operation with a
+ * {@link Account} and
  * should be implemented using Optional API. Every method that is not implemented yet throws
  * {@link ExerciseNotCompletedException}.
  * <p>
  * TODO: remove exception and implement each method of this class using Optional API
  * <p><p>
- * <strong>TODO: to get the most out of your learning, <a href="https://www.bobocode.com/learn">visit our website</a></strong>
+ * <strong>TODO: to get the most out of your learning,
+ * <a href="https://www.bobocode.com/learn">visit our website</a></strong>
  * <p>
  *
  * @author Taras Boychuk
@@ -37,7 +41,8 @@ public class CrazyOptionals {
      * @return optional object that holds text
      */
     public static Optional<String> optionalOfString(@Nullable String text) {
-        throw new ExerciseNotCompletedException();
+        return Optional.ofNullable(text);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -47,7 +52,12 @@ public class CrazyOptionals {
      * @param amount          money to deposit
      */
     public static void deposit(AccountProvider accountProvider, BigDecimal amount) {
-        throw new ExerciseNotCompletedException();
+        Optional<Account> optionalAccount = accountProvider.getAccount();
+        if (optionalAccount.isPresent()) {
+            Account account = optionalAccount.get();
+            account.setBalance(account.getBalance().add(amount));
+        }
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -57,11 +67,13 @@ public class CrazyOptionals {
      * @return optional object that holds account
      */
     public static Optional<Account> optionalOfAccount(@Nonnull Account account) {
-        throw new ExerciseNotCompletedException();
+        return Optional.of(account);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Returns the {@link Account} got from {@link AccountProvider}. If account provider does not provide an account,
+     * Returns the {@link Account} got from {@link AccountProvider}. If account provider does not
+     * provide an account,
      * returns a defaultAccount
      *
      * @param accountProvider
@@ -69,7 +81,8 @@ public class CrazyOptionals {
      * @return account from provider or defaultAccount
      */
     public static Account getAccount(AccountProvider accountProvider, Account defaultAccount) {
-        throw new ExerciseNotCompletedException();
+        return accountProvider.getAccount().orElse(defaultAccount);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -79,19 +92,26 @@ public class CrazyOptionals {
      * @param accountProvider
      * @param accountService
      */
-    public static void processAccount(AccountProvider accountProvider, AccountService accountService) {
-        throw new ExerciseNotCompletedException();
+    public static void processAccount(AccountProvider accountProvider,
+                                      AccountService accountService) {
+        accountProvider.getAccount()
+                .ifPresentOrElse(accountService::processAccount,
+                        accountService::processWithNoAccount);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Returns account provided by {@link AccountProvider}. If no account is provided it generates one using {@link Accounts}
-     * Please note that additional account should not be generated if {@link AccountProvider} returned one.
+     * Returns account provided by {@link AccountProvider}. If no account is provided it
+     * generates one using {@link Accounts}
+     * Please note that additional account should not be generated if {@link AccountProvider}
+     * returned one.
      *
      * @param accountProvider
      * @return provided or generated account
      */
     public static Account getOrGenerateAccount(AccountProvider accountProvider) {
-        throw new ExerciseNotCompletedException();
+        return accountProvider.getAccount().orElseGet(Accounts::generateAccount);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -101,7 +121,8 @@ public class CrazyOptionals {
      * @return optional balance
      */
     public static Optional<BigDecimal> retrieveBalance(AccountProvider accountProvider) {
-        throw new ExerciseNotCompletedException();
+        return accountProvider.getAccount().map(Account::getBalance);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -112,7 +133,9 @@ public class CrazyOptionals {
      * @return provided account
      */
     public static Account getAccount(AccountProvider accountProvider) {
-        throw new ExerciseNotCompletedException();
+        return accountProvider.getAccount()
+                .orElseThrow(() -> new AccountNotFoundException("No Account provided!"));
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -121,44 +144,57 @@ public class CrazyOptionals {
      * @param accountProvider
      * @return optional credit balance
      */
-    public static Optional<BigDecimal> retrieveCreditBalance(CreditAccountProvider accountProvider) {
-        throw new ExerciseNotCompletedException();
+    public static Optional<BigDecimal> retrieveCreditBalance(
+            CreditAccountProvider accountProvider) {
+        return accountProvider.getAccount().flatMap(CreditAccount::getCreditBalance);
+//        throw new ExerciseNotCompletedException();
     }
 
 
     /**
-     * Retrieves an {@link Account} with gmail email using {@link AccountProvider}. If no account is provided or it gets
+     * Retrieves an {@link Account} with gmail email using {@link AccountProvider}. If no account
+     * is provided or it gets
      * not gmail then returns {@link Optional#empty()}
      *
      * @param accountProvider
      * @return optional gmail account
      */
     public static Optional<Account> retrieveAccountGmail(AccountProvider accountProvider) {
-        throw new ExerciseNotCompletedException();
+        return accountProvider.getAccount()
+                .filter((account -> account.getEmail().split("@")[1].equals("gmail.com")));
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Retrieves account using {@link AccountProvider} and fallbackProvider. In case main provider does not provide an
-     * {@link Account} then account should ge retrieved from fallbackProvider. In case both provider returns no account
+     * Retrieves account using {@link AccountProvider} and fallbackProvider. In case main
+     * provider does not provide an
+     * {@link Account} then account should ge retrieved from fallbackProvider. In case both
+     * provider returns no account
      * then {@link java.util.NoSuchElementException} should be thrown.
      *
      * @param accountProvider
      * @param fallbackProvider
      * @return account got from either accountProvider or fallbackProvider
      */
-    public static Account getAccountWithFallback(AccountProvider accountProvider, AccountProvider fallbackProvider) {
-        throw new ExerciseNotCompletedException();
+    public static Account getAccountWithFallback(AccountProvider accountProvider,
+                                                 AccountProvider fallbackProvider) {
+        return accountProvider.getAccount().or(fallbackProvider::getAccount).orElseThrow();
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Returns an {@link Accounts} with the highest balance. Throws {@link java.util.NoSuchElementException} if input
+     * Returns an {@link Accounts} with the highest balance. Throws
+     * {@link java.util.NoSuchElementException} if input
      * list is empty
      *
      * @param accounts
      * @return account with the highest balance
      */
     public static Account getAccountWithMaxBalance(List<Account> accounts) {
-        throw new ExerciseNotCompletedException();
+        return accounts.stream()
+                .max(Comparator.comparing(Account::getBalance))
+                .orElseThrow();
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -168,17 +204,26 @@ public class CrazyOptionals {
      * @return the lowest balance values
      */
     public static OptionalDouble findMinBalanceValue(List<Account> accounts) {
-        throw new ExerciseNotCompletedException();
+        return accounts.stream()
+                .map(Account::getBalance)
+                .mapToDouble(BigDecimal::doubleValue)
+                .min();
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Finds an {@link Account} with max balance and processes it using {@link AccountService#processAccount(Account)}
+     * Finds an {@link Account} with max balance and processes it using
+     * {@link AccountService#processAccount(Account)}
      *
      * @param accounts
      * @param accountService
      */
-    public static void processAccountWithMaxBalance(List<Account> accounts, AccountService accountService) {
-        throw new ExerciseNotCompletedException();
+    public static void processAccountWithMaxBalance(List<Account> accounts,
+                                                    AccountService accountService) {
+        accounts.stream()
+                .max(Comparator.comparing(Account::getBalance))
+                .ifPresent(accountService::processAccount);
+//        throw new ExerciseNotCompletedException();
     }
 
     /**
@@ -188,7 +233,12 @@ public class CrazyOptionals {
      * @return total credit balance
      */
     public static double calculateTotalCreditBalance(List<CreditAccount> accounts) {
-        throw new ExerciseNotCompletedException();
+        return accounts.stream()
+                .map(CreditAccount::getCreditBalance)
+                .flatMap(Optional::stream)
+                .mapToDouble(BigDecimal::doubleValue)
+                .sum();
+//        throw new ExerciseNotCompletedException();
     }
 }
 
